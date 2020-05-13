@@ -88,7 +88,7 @@
     // [ts] Cannot find name 'process'
   .parse(process.argv)
   ```
-  (https://github.com/tj/commander.js/blob/master/Readme.md)[https://github.com/tj/commander.js/blob/master/Readme.md]
+  [https://github.com/tj/commander.js/blob/master/Readme.md](https://github.com/tj/commander.js/blob/master/Readme.md)
 
 ### 更好的输入
 
@@ -102,3 +102,60 @@ if (process.argv.slice(2).length === 0) {
 ### 添加色彩
 
 `yarn add colors`
+
+## 处理网络请求
+
+使用 Promise 和 async 两种方式实现
+
+### 定义接口
+
+[https://lbs.amap.com/api/webservice/guide/api/weatherinfo/](https://lbs.amap.com/api/webservice/guide/api/weatherinfo/)
+
+```ts
+interface IWeatherResponse {
+  status: string
+  count: string
+  info: string
+  infocode: string
+  lives: Ilive[]
+}
+
+interface Ilive {
+  provice: string
+  city: string
+  adcode: string
+  weather: string
+  temperature: string
+  winddirection: string
+  windpower: string
+  humidity: string
+  reporttime: string
+}
+```
+
+### Promise
+
+`yarn add axios`
+
+```ts
+async function getWeather(city: string) {
+  try {
+    const url = `${URL}?city=${encodeURI(command.city)}&key=${KEY}`
+    const reponse = await axios.get(url)
+    const live = reponse.data.lives[0]
+    log(colors.yellow(live.reporttime))
+    log(colors.white(`${live.province} ${live.city}`))
+    log(colors.green(`${live.weather} ${live.temperature} 度`))
+  } catch {
+    log(colors.red('天气服务出现异常'))
+  }
+}
+getWeather(command.city)
+```
+
+## 输出
+
+2020-05-13 15:58:45
+山西 朔州市
+多云 25 度
+Done in 2.49s.
